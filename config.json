@@ -45,7 +45,7 @@
   "tentativas_fixa": 5,
   "max_conexao_min": 600,
   "max_duracao_min": null,
-  "valor_milheiro_brl": 30,
+  "valor_milheiro_brl": 26,
   "limite_falhas_alerta": 0.85,
   "queda_vs_mediana": 0.2,
   "minimo_historico_para_mediana": 10,
