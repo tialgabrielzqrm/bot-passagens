@@ -15,7 +15,11 @@
       "passo_dias": 14,
       "max_escalas": null,
       "alvo_brl": 1800,
-      "alvo_ida_volta_brl": 2300
+      "alvo_ida_volta_brl": 2300,
+      "origens_extra": [
+        "GRU",
+        "GIG"
+      ]
     },
     {
       "nome": "Bariloche",
@@ -27,7 +31,11 @@
       "passo_dias": 14,
       "max_escalas": null,
       "alvo_brl": 1300,
-      "alvo_ida_volta_brl": 1800
+      "alvo_ida_volta_brl": 1800,
+      "origens_extra": [
+        "GRU",
+        "GIG"
+      ]
     },
     {
       "nome": "Buenos Aires",
@@ -39,7 +47,11 @@
       "passo_dias": 14,
       "max_escalas": null,
       "alvo_brl": 1000,
-      "alvo_ida_volta_brl": 1500
+      "alvo_ida_volta_brl": 1500,
+      "origens_extra": [
+        "GRU",
+        "GIG"
+      ]
     },
     {
       "nome": "Europa",
@@ -60,7 +72,36 @@
       "passo_dias": 14,
       "max_escalas": null,
       "alvo_brl": 2400,
-      "alvo_ida_volta_brl": 3200
+      "alvo_ida_volta_brl": 3200,
+      "origens_extra": [
+        "GRU",
+        "GIG"
+      ]
+    },
+    {
+      "nome": "Belo Horizonte (CNF/PLU)",
+      "destinos": [
+        "CNF",
+        "PLU"
+      ],
+      "primeira_data_em_dias": 14,
+      "horizonte_dias": 330,
+      "passo_dias": 14,
+      "max_escalas": null,
+      "alvo_brl": 350,
+      "ida_volta": false
+    },
+    {
+      "nome": "Florianópolis",
+      "destinos": [
+        "FLN"
+      ],
+      "primeira_data_em_dias": 14,
+      "horizonte_dias": 330,
+      "passo_dias": 14,
+      "max_escalas": null,
+      "alvo_brl": 450,
+      "ida_volta": false
     }
   ],
   "consultas_por_execucao": 80,
@@ -122,9 +163,8 @@
   ],
   "ida_volta": {
     "ativo": true,
-    "estadia_dias": [
-      10
-    ],
+    "estadia_min_dias": 7,
     "estadia_max_dias": 10
-  }
+  },
+  "orcamento_minutos": 20
 }
