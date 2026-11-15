@@ -9,7 +9,7 @@
       "horizonte_dias": 330,
       "passo_dias": 14,
       "max_escalas": null,
-      "alvo_brl": 2000
+      "alvo_brl": 1800
     },
     {
       "nome": "Bariloche",
@@ -27,7 +27,7 @@
       "horizonte_dias": 330,
       "passo_dias": 14,
       "max_escalas": null,
-      "alvo_brl": 900
+      "alvo_brl": 1000
     },
     {
       "nome": "Europa",
@@ -36,7 +36,7 @@
       "horizonte_dias": 330,
       "passo_dias": 14,
       "max_escalas": null,
-      "alvo_brl": 2800
+      "alvo_brl": 2400
     }
   ],
   "consultas_por_execucao": 80,
