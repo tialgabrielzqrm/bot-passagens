@@ -32,6 +32,9 @@ CONFIG = BASE / "config.json"
 HISTORICO = BASE / "dados" / "historico.csv"
 AVISADOS = BASE / "dados" / "avisados.json"
 ESTADO = BASE / "dados" / "estado.json"
+HISTORICO_IV = BASE / "dados" / "historico_ida_volta.csv"
+CAMPOS_IV = ["data_consulta", "grupo", "origem", "destino", "data_ida", "data_volta", "estadia_dias",
+             "preco_brl", "escalas_ida", "companhias", "preco_so_ida_brl"]
 CAMPOS = ["data_consulta", "grupo", "sentido", "origem", "destino", "data_voo", "preco_brl", "escalas", "companhias"]
 
 
@@ -46,6 +49,32 @@ def buscar_melhor_preco(origem, destino, data, max_escalas, moeda, max_conexao_m
             max_stops=max_escalas, max_layover_minutes=max_conexao_min, max_duration_minutes=max_duracao_min,
         )],
         trip="one-way",
+        seat="economy",
+        passengers=Passengers(adults=1),
+        language="pt-BR",
+        currency=moeda,
+    )
+    melhor = None
+    for r in get_flights(q):
+        if not r.price:
+            continue
+        escalas = max(len(r.flights) - 1, 0)
+        if melhor is None or r.price < melhor[0]:
+            melhor = (r.price, escalas, ", ".join(r.airlines))
+    return melhor
+
+
+def buscar_ida_volta(origem, destino, data, volta, max_escalas, moeda, max_conexao_min=None, max_duracao_min=None):
+    """Passagem de ida e volta mais barata (preço total). Devolve (preco, escalas_ida, companhias) ou None."""
+    from fast_flights import FlightQuery, Passengers, create_query, get_flights
+
+    comum = dict(max_stops=max_escalas, max_layover_minutes=max_conexao_min, max_duration_minutes=max_duracao_min)
+    q = create_query(
+        flights=[
+            FlightQuery(date=data.isoformat(), from_airport=origem, to_airport=destino, **comum),
+            FlightQuery(date=volta.isoformat(), from_airport=destino, to_airport=origem, **comum),
+        ],
+        trip="round-trip",
         seat="economy",
         passengers=Passengers(adults=1),
         language="pt-BR",
@@ -87,6 +116,23 @@ def gravar_historico(linhas):
     novo = not HISTORICO.exists()
     with HISTORICO.open("a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=CAMPOS)
+        if novo:
+            w.writeheader()
+        w.writerows(linhas)
+
+
+def ler_historico_iv():
+    if not HISTORICO_IV.exists():
+        return []
+    with HISTORICO_IV.open(newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def gravar_historico_iv(linhas):
+    HISTORICO_IV.parent.mkdir(parents=True, exist_ok=True)
+    novo = not HISTORICO_IV.exists()
+    with HISTORICO_IV.open("a", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=CAMPOS_IV)
         if novo:
             w.writeheader()
         w.writerows(linhas)
@@ -134,6 +180,20 @@ def e_promocao(preco, grupo, trecho, historico, cfg, data_voo=None):
         if preco <= med * (1 - cfg["queda_vs_mediana"]):
             pct = round((1 - preco / med) * 100)
             motivos.append(f"{pct}% abaixo da mediana ({fmt_brl(med)})")
+    return motivos
+
+
+def e_promocao_iv(preco, grupo, destino, historico_iv, cfg):
+    """Ida e volta: abaixo da meta de ida e volta do grupo OU bem abaixo da mediana do destino."""
+    motivos = []
+    alvo = grupo.get("alvo_ida_volta_brl")
+    if alvo and preco <= alvo:
+        motivos.append(f"abaixo da sua meta de ida e volta de {fmt_brl(alvo)}")
+    precos = [float(h["preco_brl"]) for h in historico_iv if h["destino"] == destino]
+    if len(precos) >= cfg["minimo_historico_para_mediana"]:
+        med = statistics.median(precos)
+        if preco <= med * (1 - cfg["queda_vs_mediana"]):
+            motivos.append(f"{round((1 - preco / med) * 100)}% abaixo da mediana de ida e volta ({fmt_brl(med)})")
     return motivos
 
 
@@ -208,6 +268,25 @@ def montar_mensagem(grupo, origem, destino, data, preco, escalas, cias, motivos,
         f"Por quê: {'; '.join(motivos)}"
         + (linha_milhas(preco, cfg) if cfg else "")
         + f"\n{link_google_flights(origem, destino, data)}"
+    )
+
+
+def montar_mensagem_iv(grupo, origem, destino, data, volta, dias, preco, escalas, cias, motivos, cfg, so_ida=None):
+    esc = "direto" if escalas == 0 else f"{escalas} escala(s)"
+    extra = ""
+    if so_ida and preco <= so_ida:
+        extra = f"\n💡 Sai menos que só a ida ({fmt_brl(so_ida)})"
+    q = f"Voos de {origem} para {destino} em {data.isoformat()} retornando em {volta.isoformat()}"
+    link = "https://www.google.com/travel/flights?q=" + urllib.parse.quote(q) + "&curr=BRL&hl=pt-BR"
+    return (
+        f"✈️ {grupo['nome']} (IDA+VOLTA, {dias} dias): {origem} ⇄ {destino}\n"
+        f"{fmt_brl(preco)} ida e volta ({esc} na ida)"
+        f"\nIda: {data.strftime('%d/%m/%Y')} · Volta: {volta.strftime('%d/%m/%Y')}\n"
+        f"Cia: {cias or '—'}\n"
+        f"Por quê: {'; '.join(motivos)}"
+        + extra
+        + (linha_milhas(preco, cfg) if cfg else "")
+        + f"\n{link}"
     )
 
 
@@ -366,13 +445,17 @@ def planejar(cfg, hoje, rng):
 
 
 def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, dormir=time.sleep, rng=None,
-          baixar=None, buscar_updates=telegram_updates):
+          baixar=None, buscar_updates=telegram_updates, buscar_iv=buscar_ida_volta):
     hoje = hoje or date.today()
     rng = rng or random.Random()
     historico = ler_historico()
     avisados = ler_avisados()
     estado = ler_estado()
+    historico_iv = ler_historico_iv()
     novas, achados, falhas = [], [], 0
+    novas_iv, achados_iv, falhas_iv = [], [], 0
+    iv_da_ida = {}  # (origem, destino, data) -> (preço ida e volta, dias), para comparar com a ida
+    cfg_iv = cfg.get("ida_volta") or {}
 
     # 1) promoções Livelo -> LATAM e comandos do Telegram (rápidos)
     checar_promocoes(cfg, estado, enviar, baixar=baixar)
@@ -402,11 +485,52 @@ def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, do
             chave = f"{orig}|{dest}|{data}"
             if motivos and deve_avisar(chave, preco, avisados, cfg):
                 achados.append((chave, g, orig, dest, data, preco, escalas, cias, motivos))
+        # 2b) ida e volta (estadia de no máximo `estadia_max_dias`) para o mesmo dia de ida
+        if cfg_iv.get("ativo") and orig == cfg["origem"] and not g.get("fixa"):
+            so_ida = res[0] if res else None
+            limite = cfg_iv.get("estadia_max_dias", 10)
+            for dias in cfg_iv.get("estadia_dias", [limite]):
+                dias = min(dias, limite)  # nunca passa do limite
+                volta = data + timedelta(days=dias)
+                args_iv = (orig, dest, data, volta, g.get("max_escalas"), cfg["moeda"],
+                           g.get("max_conexao_min", cfg.get("max_conexao_min")),
+                           g.get("max_duracao_min", cfg.get("max_duracao_min")))
+                try:
+                    r2 = buscar_com_tentativas(buscar_iv, args_iv, cfg.get("tentativas", 3), dormir, rng, cfg["pausa_segundos"])
+                except Exception as e:  # noqa: BLE001
+                    falhas_iv += 1
+                    print(f"falhou ida+volta {orig}-{dest} {data}: {type(e).__name__}: {e}")
+                    dormir(rng.uniform(*cfg["pausa_segundos"]))
+                    continue
+                if r2:
+                    p2, esc2, cias2 = r2
+                    if (orig, dest, data) not in iv_da_ida or p2 < iv_da_ida[(orig, dest, data)][0]:
+                        iv_da_ida[(orig, dest, data)] = (p2, dias)
+                    novas_iv.append({
+                        "data_consulta": hoje.isoformat(), "grupo": g["nome"], "origem": orig, "destino": dest,
+                        "data_ida": data.isoformat(), "data_volta": volta.isoformat(), "estadia_dias": dias,
+                        "preco_brl": p2, "escalas_ida": esc2, "companhias": cias2,
+                        "preco_so_ida_brl": so_ida if so_ida else "",
+                    })
+                    mot2 = e_promocao_iv(p2, g, dest, historico_iv, cfg)
+                    chave2 = f"IV|{orig}|{dest}|{data}|{dias}"
+                    if mot2 and deve_avisar(chave2, p2, avisados, cfg):
+                        achados_iv.append((chave2, g, orig, dest, data, volta, dias, p2, esc2, cias2, mot2, so_ida))
+                dormir(rng.uniform(*cfg["pausa_segundos"]))
         dormir(rng.uniform(*cfg["pausa_segundos"]))
 
     gravar_historico(novas)
+    gravar_historico_iv(novas_iv)
     for chave, g, orig, dest, data, preco, escalas, cias, motivos in sorted(achados, key=lambda a: a[5]):
-        if enviar(montar_mensagem(g, orig, dest, data, preco, escalas, cias, motivos, cfg, cfg["origem"])):
+        texto = montar_mensagem(g, orig, dest, data, preco, escalas, cias, motivos, cfg, cfg["origem"])
+        iv = iv_da_ida.get((orig, dest, data))
+        if iv and iv[0] <= preco:
+            texto = texto.replace("\nhttps://", f"\n💡 Ida e volta ({iv[1]} dias) sai {fmt_brl(iv[0])}, "
+                                  f"menos que só a ida. Vale ver!\nhttps://", 1)
+        if enviar(texto):
+            avisados[chave] = preco
+    for chave, g, orig, dest, data, volta, dias, preco, escalas, cias, motivos, so_ida in sorted(achados_iv, key=lambda a: a[7]):
+        if enviar(montar_mensagem_iv(g, orig, dest, data, volta, dias, preco, escalas, cias, motivos, cfg, so_ida)):
             avisados[chave] = preco
     gravar_avisados(avisados)
     historico_total = historico + novas
@@ -427,6 +551,8 @@ def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, do
     estado["ultima_rodada"] = {"data": hoje.isoformat(), "coletados": len(novas), "falhas": falhas}
     gravar_estado(estado)
     print(f"{len(novas)} preços coletados, {falhas} falhas, {len(achados)} promoções.")
+    if cfg_iv.get("ativo"):
+        print(f"ida e volta: {len(novas_iv)} preços, {falhas_iv} falhas, {len(achados_iv)} promoções.")
     return novas, achados
 
 
