@@ -1,0 +1,57 @@
+{
+  "origem": "BSB",
+  "moeda": "BRL",
+  "grupos": [
+    {
+      "nome": "Flórida",
+      "destinos": ["MCO", "MIA", "FLL", "TPA"],
+      "primeira_data_em_dias": 30,
+      "horizonte_dias": 330,
+      "passo_dias": 14,
+      "max_escalas": null,
+      "alvo_brl": 2000
+    },
+    {
+      "nome": "Bariloche",
+      "destinos": ["BRC"],
+      "primeira_data_em_dias": 30,
+      "horizonte_dias": 330,
+      "passo_dias": 14,
+      "max_escalas": null,
+      "alvo_brl": 1300
+    },
+    {
+      "nome": "Buenos Aires",
+      "destinos": ["EZE"],
+      "primeira_data_em_dias": 30,
+      "horizonte_dias": 330,
+      "passo_dias": 14,
+      "max_escalas": null,
+      "alvo_brl": 900
+    },
+    {
+      "nome": "Europa",
+      "destinos": ["LIS", "MAD", "BCN", "CDG", "FCO", "LHR", "AMS", "FRA", "MXP", "OPO"],
+      "primeira_data_em_dias": 30,
+      "horizonte_dias": 330,
+      "passo_dias": 14,
+      "max_escalas": null,
+      "alvo_brl": 2800
+    }
+  ],
+  "consultas_por_execucao": 80,
+  "pausa_segundos": [3, 7],
+  "queda_vs_mediana": 0.2,
+  "minimo_historico_para_mediana": 10,
+  "reavisar_se_cair_mais_que": 0.05,
+  "buscas_fixas": [
+    {
+      "nome": "Rio (SDU) maio/2027",
+      "trechos": [
+        {"origem": "BSB", "destino": "SDU", "datas": ["2027-05-27"]},
+        {"origem": "SDU", "destino": "BSB", "datas": ["2027-05-31", "2027-06-01"]}
+      ],
+      "max_escalas": null
+    }
+  ]
+}
