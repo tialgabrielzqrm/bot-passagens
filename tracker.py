@@ -160,6 +160,11 @@ def fmt_brl(v):
     return f"R$ {v:,.0f}".replace(",", ".")
 
 
+def origens_do_grupo(g, base):
+    """Aeroportos de saída do grupo: Brasília e, se houver, outros (ex.: GRU/GIG para voos ao exterior)."""
+    return [base] + list(g.get("origens_extra", []))
+
+
 def e_promocao(preco, grupo, trecho, historico, cfg, data_voo=None):
     """Promoção = abaixo da meta do grupo OU bem abaixo da mediana histórica do trecho.
     Buscas fixas avisam sempre que aparece o menor preço já visto para a data."""
@@ -183,13 +188,13 @@ def e_promocao(preco, grupo, trecho, historico, cfg, data_voo=None):
     return motivos
 
 
-def e_promocao_iv(preco, grupo, destino, historico_iv, cfg):
+def e_promocao_iv(preco, grupo, origem, destino, historico_iv, cfg):
     """Ida e volta: abaixo da meta de ida e volta do grupo OU bem abaixo da mediana do destino."""
     motivos = []
     alvo = grupo.get("alvo_ida_volta_brl")
     if alvo and preco <= alvo:
         motivos.append(f"abaixo da sua meta de ida e volta de {fmt_brl(alvo)}")
-    precos = [float(h["preco_brl"]) for h in historico_iv if h["destino"] == destino]
+    precos = [float(h["preco_brl"]) for h in historico_iv if h["destino"] == destino and h["origem"] == origem]
     if len(precos) >= cfg["minimo_historico_para_mediana"]:
         med = statistics.median(precos)
         if preco <= med * (1 - cfg["queda_vs_mediana"]):
@@ -257,9 +262,15 @@ def linha_milhas(preco, cfg):
     return f"\nEm milhas compensa se custar até ~{milhas} mil milhas (milheiro a {fmt_brl(mil)})"
 
 
+def nota_outro_aeroporto(origem, destino, base):
+    if origem != base and destino != base:
+        return f"\n⚠️ Parte/chega fora de Brasília ({origem}→{destino}): conte o custo de ir ou voltar a {base}."
+    return ""
+
+
 def montar_mensagem(grupo, origem, destino, data, preco, escalas, cias, motivos, cfg=None, base="BSB"):
     esc = "direto" if escalas == 0 else f"{escalas} escala(s)"
-    sentido = "IDA" if origem == base else "VOLTA"
+    sentido = "IDA" if origem in origens_do_grupo(grupo, base) else "VOLTA"
     return (
         f"✈️ {grupo['nome']} ({sentido}): {origem} → {destino}\n"
         f"{fmt_brl(preco)} só {sentido.lower()} ({esc})"
@@ -267,11 +278,13 @@ def montar_mensagem(grupo, origem, destino, data, preco, escalas, cias, motivos,
         f"Cia: {cias or '—'}\n"
         f"Por quê: {'; '.join(motivos)}"
         + (linha_milhas(preco, cfg) if cfg else "")
+        + nota_outro_aeroporto(origem, destino, base)
         + f"\n{link_google_flights(origem, destino, data)}"
     )
 
 
 def montar_mensagem_iv(grupo, origem, destino, data, volta, dias, preco, escalas, cias, motivos, cfg, so_ida=None):
+    aviso = f"\n⚠️ Sai de {origem}: conte o custo de chegar lá." if origem != cfg["origem"] else ""
     esc = "direto" if escalas == 0 else f"{escalas} escala(s)"
     extra = ""
     if so_ida and preco <= so_ida:
@@ -285,6 +298,7 @@ def montar_mensagem_iv(grupo, origem, destino, data, volta, dias, preco, escalas
         f"Cia: {cias or '—'}\n"
         f"Por quê: {'; '.join(motivos)}"
         + extra
+        + aviso
         + (linha_milhas(preco, cfg) if cfg else "")
         + f"\n{link}"
     )
@@ -431,8 +445,9 @@ def planejar(cfg, hoje, rng):
         while d <= g["horizonte_dias"]:
             data = hoje + timedelta(days=d)
             for dest in g["destinos"]:
-                todas.append((g, base, dest, data))
-                todas.append((g, dest, base, data))
+                for o in origens_do_grupo(g, base):
+                    todas.append((g, o, dest, data))
+                    todas.append((g, dest, o, data))
             d += g["passo_dias"]
     rng.shuffle(todas)
     fixas = []
@@ -445,7 +460,7 @@ def planejar(cfg, hoje, rng):
 
 
 def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, dormir=time.sleep, rng=None,
-          baixar=None, buscar_updates=telegram_updates, buscar_iv=buscar_ida_volta):
+          baixar=None, buscar_updates=telegram_updates, buscar_iv=buscar_ida_volta, relogio=time.monotonic):
     hoje = hoje or date.today()
     rng = rng or random.Random()
     historico = ler_historico()
@@ -456,6 +471,9 @@ def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, do
     novas_iv, achados_iv, falhas_iv = [], [], 0
     iv_da_ida = {}  # (origem, destino, data) -> (preço ida e volta, dias), para comparar com a ida
     cfg_iv = cfg.get("ida_volta") or {}
+    inicio = relogio()
+    orcamento = cfg.get("orcamento_minutos")
+    cortou = 0
 
     # 1) promoções Livelo -> LATAM e comandos do Telegram (rápidos)
     checar_promocoes(cfg, estado, enviar, baixar=baixar)
@@ -463,6 +481,9 @@ def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, do
 
     # 2) preços
     for g, orig, dest, data in planejar(cfg, hoje, rng):
+        if orcamento and not g.get("fixa") and relogio() - inicio > orcamento * 60:
+            cortou += 1  # acabou o tempo desta rodada: o resto fica para a próxima
+            continue
         tentativas = cfg.get("tentativas_fixa", 5) if g.get("fixa") else cfg.get("tentativas", 3)
         args = (orig, dest, data, g.get("max_escalas"), cfg["moeda"],
                 g.get("max_conexao_min", cfg.get("max_conexao_min")), g.get("max_duracao_min", cfg.get("max_duracao_min")))
@@ -477,7 +498,7 @@ def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, do
             preco, escalas, cias = res
             novas.append({
                 "data_consulta": hoje.isoformat(), "grupo": g["nome"],
-                "sentido": "ida" if orig == cfg["origem"] else "volta",
+                "sentido": "ida" if orig in origens_do_grupo(g, cfg["origem"]) else "volta",
                 "origem": orig, "destino": dest, "data_voo": data.isoformat(),
                 "preco_brl": preco, "escalas": escalas, "companhias": cias,
             })
@@ -486,11 +507,12 @@ def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, do
             if motivos and deve_avisar(chave, preco, avisados, cfg):
                 achados.append((chave, g, orig, dest, data, preco, escalas, cias, motivos))
         # 2b) ida e volta (estadia de no máximo `estadia_max_dias`) para o mesmo dia de ida
-        if cfg_iv.get("ativo") and orig == cfg["origem"] and not g.get("fixa"):
+        if (cfg_iv.get("ativo") and g.get("ida_volta", True) and not g.get("fixa")
+                and orig in origens_do_grupo(g, cfg["origem"])):
             so_ida = res[0] if res else None
-            limite = cfg_iv.get("estadia_max_dias", 10)
-            for dias in cfg_iv.get("estadia_dias", [limite]):
-                dias = min(dias, limite)  # nunca passa do limite
+            minimo = cfg_iv.get("estadia_min_dias", 7)
+            limite = max(cfg_iv.get("estadia_max_dias", 10), minimo)
+            for dias in [rng.randint(minimo, limite)]:  # sorteia a estadia entre o mínimo e o máximo
                 volta = data + timedelta(days=dias)
                 args_iv = (orig, dest, data, volta, g.get("max_escalas"), cfg["moeda"],
                            g.get("max_conexao_min", cfg.get("max_conexao_min")),
@@ -512,7 +534,7 @@ def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, do
                         "preco_brl": p2, "escalas_ida": esc2, "companhias": cias2,
                         "preco_so_ida_brl": so_ida if so_ida else "",
                     })
-                    mot2 = e_promocao_iv(p2, g, dest, historico_iv, cfg)
+                    mot2 = e_promocao_iv(p2, g, orig, dest, historico_iv, cfg)
                     chave2 = f"IV|{orig}|{dest}|{data}|{dias}"
                     if mot2 and deve_avisar(chave2, p2, avisados, cfg):
                         achados_iv.append((chave2, g, orig, dest, data, volta, dias, p2, esc2, cias2, mot2, so_ida))
@@ -551,6 +573,8 @@ def rodar(cfg, buscar=buscar_melhor_preco, enviar=telegram_enviar, hoje=None, do
     estado["ultima_rodada"] = {"data": hoje.isoformat(), "coletados": len(novas), "falhas": falhas}
     gravar_estado(estado)
     print(f"{len(novas)} preços coletados, {falhas} falhas, {len(achados)} promoções.")
+    if cortou:
+        print(f"tempo esgotado ({orcamento} min): {cortou} consultas ficaram para a próxima rodada.")
     if cfg_iv.get("ativo"):
         print(f"ida e volta: {len(novas_iv)} preços, {falhas_iv} falhas, {len(achados_iv)} promoções.")
     return novas, achados
