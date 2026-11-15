@@ -4,43 +4,70 @@
   "grupos": [
     {
       "nome": "Flórida",
-      "destinos": ["MCO", "MIA", "FLL", "TPA"],
+      "destinos": [
+        "MCO",
+        "MIA",
+        "FLL",
+        "TPA"
+      ],
       "primeira_data_em_dias": 30,
       "horizonte_dias": 330,
       "passo_dias": 14,
       "max_escalas": null,
-      "alvo_brl": 1800
+      "alvo_brl": 1800,
+      "alvo_ida_volta_brl": 2300
     },
     {
       "nome": "Bariloche",
-      "destinos": ["BRC"],
+      "destinos": [
+        "BRC"
+      ],
       "primeira_data_em_dias": 30,
       "horizonte_dias": 330,
       "passo_dias": 14,
       "max_escalas": null,
-      "alvo_brl": 1300
+      "alvo_brl": 1300,
+      "alvo_ida_volta_brl": 1800
     },
     {
       "nome": "Buenos Aires",
-      "destinos": ["EZE"],
+      "destinos": [
+        "EZE"
+      ],
       "primeira_data_em_dias": 30,
       "horizonte_dias": 330,
       "passo_dias": 14,
       "max_escalas": null,
-      "alvo_brl": 1000
+      "alvo_brl": 1000,
+      "alvo_ida_volta_brl": 1500
     },
     {
       "nome": "Europa",
-      "destinos": ["LIS", "MAD", "BCN", "CDG", "FCO", "LHR", "AMS", "FRA", "MXP", "OPO"],
+      "destinos": [
+        "LIS",
+        "MAD",
+        "BCN",
+        "CDG",
+        "FCO",
+        "LHR",
+        "AMS",
+        "FRA",
+        "MXP",
+        "OPO"
+      ],
       "primeira_data_em_dias": 30,
       "horizonte_dias": 330,
       "passo_dias": 14,
       "max_escalas": null,
-      "alvo_brl": 2400
+      "alvo_brl": 2400,
+      "alvo_ida_volta_brl": 3200
     }
   ],
   "consultas_por_execucao": 80,
-  "pausa_segundos": [3, 7],
+  "pausa_segundos": [
+    3,
+    7
+  ],
   "tentativas": 3,
   "tentativas_fixa": 5,
   "max_conexao_min": 600,
@@ -59,12 +86,45 @@
     {
       "nome": "Rio (SDU/GIG) maio/2027",
       "trechos": [
-        {"origem": "BSB", "destino": "SDU", "datas": ["2027-05-27"]},
-        {"origem": "SDU", "destino": "BSB", "datas": ["2027-05-31", "2027-06-01"]},
-        {"origem": "BSB", "destino": "GIG", "datas": ["2027-05-27"]},
-        {"origem": "GIG", "destino": "BSB", "datas": ["2027-05-31", "2027-06-01"]}
+        {
+          "origem": "BSB",
+          "destino": "SDU",
+          "datas": [
+            "2027-05-27"
+          ]
+        },
+        {
+          "origem": "SDU",
+          "destino": "BSB",
+          "datas": [
+            "2027-05-31",
+            "2027-06-01"
+          ]
+        },
+        {
+          "origem": "BSB",
+          "destino": "GIG",
+          "datas": [
+            "2027-05-27"
+          ]
+        },
+        {
+          "origem": "GIG",
+          "destino": "BSB",
+          "datas": [
+            "2027-05-31",
+            "2027-06-01"
+          ]
+        }
       ],
       "max_escalas": null
     }
-  ]
+  ],
+  "ida_volta": {
+    "ativo": true,
+    "estadia_dias": [
+      10
+    ],
+    "estadia_max_dias": 10
+  }
 }
