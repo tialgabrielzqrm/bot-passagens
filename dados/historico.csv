@@ -866,3 +866,67 @@ data_consulta,grupo,sentido,origem,destino,data_voo,preco_brl,escalas,companhias
 2026-11-18,Flórida,ida,GRU,MIA,2027-02-12,2954,1,COPA
 2026-11-18,Flórida,volta,FLL,GIG,2027-01-15,4409,1,United
 2026-11-18,Buenos Aires,volta,EZE,GRU,2027-02-26,2154,1,BoA
+2026-11-18,Rio (SDU/GIG) maio/2027,ida,BSB,GIG,2027-05-27,648,1,Gol
+2026-11-18,Rio (SDU/GIG) maio/2027,volta,GIG,BSB,2027-05-31,363,2,Gol
+2026-11-18,Rio (SDU/GIG) maio/2027,volta,GIG,BSB,2027-06-01,363,2,Gol
+2026-11-18,Belo Horizonte (CNF/PLU),ida,BSB,CNF,2027-02-10,259,1,Gol
+2026-11-18,Europa,ida,BSB,LIS,2027-01-29,4379,2,"COPA, United"
+2026-11-18,Europa,volta,AMS,GIG,2027-10-08,4732,1,Tap Air Portugal
+2026-11-18,Flórida,volta,MCO,GRU,2027-05-07,2445,1,American
+2026-11-18,Buenos Aires,ida,GIG,EZE,2027-10-08,1123,2,LATAM
+2026-11-18,Europa,ida,GIG,AMS,2027-02-12,4715,2,"Gol, Air Europa"
+2026-11-18,Europa,ida,GRU,FCO,2027-10-08,4041,1,Tap Air Portugal
+2026-11-18,Flórida,volta,MCO,BSB,2027-01-15,3117,2,"American, Gol"
+2026-11-18,Europa,ida,BSB,LHR,2027-03-12,4896,2,"Gol, ITA"
+2026-11-18,Europa,volta,LHR,GRU,2027-04-09,3426,1,ITA
+2026-11-18,Europa,volta,LIS,BSB,2027-07-30,6638,1,"Tap Air Portugal, Gol"
+2026-11-18,Europa,ida,BSB,LIS,2027-04-23,4754,2,"Gol, Air Europa"
+2026-11-18,Europa,volta,BCN,GRU,2027-06-18,3922,1,KLM
+2026-11-18,Flórida,ida,BSB,MCO,2027-02-12,3335,2,"Gol, United"
+2026-11-18,Europa,ida,GIG,LIS,2027-01-29,4137,1,Air Transat
+2026-11-18,Bariloche,ida,GRU,BRC,2027-03-26,2580,1,"LATAM, Aerolineas Argentinas"
+2026-11-18,Flórida,volta,FLL,BSB,2027-07-02,5820,2,"Delta, LATAM"
+2026-11-18,Europa,volta,CDG,GIG,2027-01-15,4932,1,ITA
+2026-11-18,Europa,ida,GRU,LHR,2026-12-18,5203,1,"LATAM, Iberia"
+2026-11-18,Flórida,volta,MIA,GRU,2027-08-27,2485,1,Aerolineas Argentinas
+2026-11-18,Europa,ida,GRU,MAD,2027-01-01,5536,1,Avianca
+2026-11-18,Europa,ida,BSB,LIS,2027-08-13,4754,2,"Gol, Air Europa"
+2026-11-18,Europa,volta,FRA,GIG,2027-01-01,4554,2,"Air France, Gol"
+2026-11-18,Europa,volta,MXP,GRU,2027-03-26,3723,1,Tap Air Portugal
+2026-11-18,Flórida,volta,MCO,GIG,2027-01-15,2738,1,COPA
+2026-11-18,Europa,volta,BCN,BSB,2027-02-26,3706,2,"Iberia, LATAM"
+2026-11-18,Europa,volta,LIS,BSB,2027-05-21,3972,2,"KLM, Gol"
+2026-11-18,Belo Horizonte (CNF/PLU),volta,CNF,BSB,2027-08-25,233,0,LATAM
+2026-11-18,Flórida,ida,BSB,FLL,2027-09-24,4660,2,"LATAM, Delta"
+2026-11-18,Buenos Aires,volta,EZE,GRU,2027-03-26,1939,1,"Aerolineas Argentinas, LATAM"
+2026-11-18,Europa,volta,LHR,GRU,2027-07-30,5814,1,"British Airways, LATAM"
+2026-11-18,Europa,ida,GRU,AMS,2027-05-21,3845,1,Tap Air Portugal
+2026-11-18,Flórida,volta,FLL,GRU,2027-03-12,3023,1,United
+2026-11-18,Europa,volta,LIS,GIG,2027-10-08,4760,2,"Turkish Airlines, LATAM"
+2026-11-18,Buenos Aires,volta,EZE,GIG,2027-07-02,2284,2,LATAM
+2026-11-18,Flórida,ida,GIG,MIA,2027-07-30,3093,1,Aerolineas Argentinas
+2026-11-18,Flórida,ida,GRU,FLL,2027-03-26,3150,1,United
+2026-11-18,Flórida,ida,GRU,MCO,2027-01-29,2754,2,United
+2026-11-18,Flórida,ida,GIG,MIA,2027-02-26,3121,1,Aerolineas Argentinas
+2026-11-18,Europa,ida,GIG,MXP,2027-03-26,4368,1,Tap Air Portugal
+2026-11-18,Flórida,ida,GIG,TPA,2027-04-09,2501,2,American
+2026-11-18,Europa,volta,CDG,BSB,2026-12-18,9292,1,"Air France, Gol"
+2026-11-18,Flórida,ida,GRU,MIA,2027-03-12,2634,1,Aerolineas Argentinas
+2026-11-18,Europa,volta,OPO,GRU,2027-04-23,3010,1,"Iberia, LATAM"
+2026-11-18,Europa,volta,FRA,GRU,2027-04-23,3164,1,KLM
+2026-11-18,Europa,ida,BSB,BCN,2027-03-26,4801,2,"Gol, KLM"
+2026-11-18,Europa,volta,FCO,GRU,2027-06-04,3898,1,Tap Air Portugal
+2026-11-18,Europa,ida,BSB,BCN,2027-02-12,4757,2,"Gol, KLM"
+2026-11-18,Europa,volta,LHR,GRU,2027-06-04,5013,1,Tap Air Portugal
+2026-11-18,Europa,volta,OPO,GIG,2027-08-13,4702,2,"Turkish Airlines, LATAM"
+2026-11-18,Europa,volta,BCN,GRU,2026-12-18,8237,1,KLM
+2026-11-18,Europa,ida,BSB,BCN,2027-05-07,4717,2,"LATAM, Tap Air Portugal"
+2026-11-18,Flórida,volta,MCO,BSB,2027-07-16,3550,2,"American, Gol"
+2026-11-18,Flórida,volta,FLL,GIG,2027-03-26,3109,2,"Air Canada, Gol"
+2026-11-18,Europa,volta,LHR,GIG,2027-02-26,3564,1,Avianca
+2026-11-18,Europa,volta,MAD,GIG,2027-02-12,4504,1,Tap Air Portugal
+2026-11-18,Europa,ida,BSB,CDG,2026-12-18,5877,2,"Gol, KLM, Air France"
+2026-11-18,Flórida,volta,MCO,GIG,2027-09-24,1613,2,"Avianca, Gol"
+2026-11-18,Flórida,volta,TPA,GRU,2027-04-09,1646,2,"Avianca, Gol"
+2026-11-18,Europa,ida,GRU,BCN,2027-01-29,3601,1,Tap Air Portugal
+2026-11-18,Europa,ida,GIG,OPO,2027-04-23,4456,2,"LATAM, Tap Air Portugal"
