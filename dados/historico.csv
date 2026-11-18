@@ -930,3 +930,32 @@ data_consulta,grupo,sentido,origem,destino,data_voo,preco_brl,escalas,companhias
 2026-11-18,Flórida,volta,TPA,GRU,2027-04-09,1646,2,"Avianca, Gol"
 2026-11-18,Europa,ida,GRU,BCN,2027-01-29,3601,1,Tap Air Portugal
 2026-11-18,Europa,ida,GIG,OPO,2027-04-23,4456,2,"LATAM, Tap Air Portugal"
+2026-11-18,Rio (SDU/GIG) maio/2027,ida,BSB,SDU,2027-05-27,602,1,Gol
+2026-11-18,Rio (SDU/GIG) maio/2027,volta,SDU,BSB,2027-05-31,790,0,Gol
+2026-11-18,Rio (SDU/GIG) maio/2027,volta,SDU,BSB,2027-06-01,407,2,Gol
+2026-11-18,Rio (SDU/GIG) maio/2027,ida,BSB,GIG,2027-05-27,648,0,Gol
+2026-11-18,Rio (SDU/GIG) maio/2027,volta,GIG,BSB,2027-06-01,363,1,Gol
+2026-11-18,Europa,ida,GIG,OPO,2027-07-30,4783,2,"LATAM, Tap Air Portugal"
+2026-11-18,Flórida,ida,BSB,MIA,2027-06-04,2505,2,"Gol, Avianca"
+2026-11-18,Europa,volta,MXP,GRU,2027-06-04,3745,1,Tap Air Portugal
+2026-11-18,Europa,volta,OPO,GRU,2027-02-26,2864,2,"Tap Air Portugal, Gol"
+2026-11-18,Flórida,ida,GIG,MIA,2027-01-01,6006,2,"Gol, Avianca"
+2026-11-18,Europa,volta,LIS,BSB,2027-01-29,5774,2,"Lufthansa, LATAM"
+2026-11-18,Europa,volta,MXP,GRU,2027-03-12,3996,1,Turkish Airlines
+2026-11-18,Europa,volta,FRA,GIG,2027-05-07,3500,2,"KLM, Gol"
+2026-11-18,Europa,volta,FRA,BSB,2026-12-18,7053,2,"Tap Air Portugal, Gol"
+2026-11-18,Flórida,volta,MIA,BSB,2027-06-18,2488,2,"Avianca, Gol"
+2026-11-18,Europa,volta,FCO,GRU,2027-06-18,3921,1,Tap Air Portugal
+2026-11-18,Europa,volta,MXP,GIG,2027-01-29,5433,1,Delta
+2026-11-18,Europa,ida,GRU,OPO,2026-12-18,5678,1,Iberia
+2026-11-18,Europa,volta,AMS,GRU,2027-09-10,3751,1,United
+2026-11-18,Europa,ida,GRU,CDG,2027-01-15,5658,1,Avianca
+2026-11-18,Europa,volta,MAD,BSB,2027-05-07,3043,1,LATAM
+2026-11-18,Europa,volta,MAD,GIG,2027-01-01,4531,1,Tap Air Portugal
+2026-11-18,Flórida,volta,MIA,GIG,2027-10-08,4263,1,COPA
+2026-11-18,Europa,ida,GIG,LHR,2026-12-18,5045,1,Avianca
+2026-11-18,Europa,volta,FCO,BSB,2027-07-16,5853,2,"Turkish Airlines, Gol"
+2026-11-18,Flórida,volta,TPA,GRU,2027-07-02,2752,2,American
+2026-11-18,Flórida,ida,GIG,FLL,2027-07-30,5413,2,"Gol, American"
+2026-11-18,Flórida,volta,MCO,GRU,2027-01-15,2493,2,American
+2026-11-18,Flórida,ida,GIG,FLL,2027-06-18,5748,1,"Gol, Azul"

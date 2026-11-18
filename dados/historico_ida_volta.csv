@@ -317,3 +317,6 @@ data_consulta,grupo,origem,destino,data_ida,data_volta,estadia_dias,preco_brl,es
 2026-11-18,Europa,BSB,CDG,2026-12-18,2026-12-26,8,9006,1,"Gol, Air France",5877
 2026-11-18,Europa,GRU,BCN,2027-01-29,2027-02-06,8,4900,1,Tap Air Portugal,3601
 2026-11-18,Europa,GIG,OPO,2027-04-23,2027-05-02,9,7218,1,Lufthansa,4456
+2026-11-18,Flórida,BSB,MIA,2027-06-04,2027-06-11,7,6444,1,LATAM,2505
+2026-11-18,Europa,GRU,OPO,2026-12-18,2026-12-25,7,7920,1,"LATAM, Air Europa",5678
+2026-11-18,Europa,GIG,LHR,2026-12-18,2026-12-25,7,7787,1,KLM,5045
