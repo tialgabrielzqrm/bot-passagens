@@ -1,10 +1,10 @@
 {
  "promos_avisadas": {},
  "telegram_offset": 0,
- "ultimo_resumo": "2026-11-15",
+ "ultimo_resumo": "2026-11-22",
  "ultima_rodada": {
-  "data": "2026-11-21",
-  "coletados": 78,
-  "falhas": 8
+  "data": "2026-11-22",
+  "coletados": 63,
+  "falhas": 23
  }
 }
