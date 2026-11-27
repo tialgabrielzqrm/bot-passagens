@@ -1094,3 +1094,7 @@ data_consulta,grupo,origem,destino,data_ida,data_volta,estadia_dias,preco_brl,es
 2026-11-27,Flórida,GRU,FLL,2027-05-16,2027-05-25,9,4339,1,Air Canada,4211
 2026-11-27,Europa,GIG,LHR,2027-06-13,2027-06-21,8,6328,1,"Iberia, British Airways",4244
 2026-11-27,Flórida,BSB,MCO,2027-09-19,2027-09-29,10,4020,2,"Gol, Avianca",2396
+2026-11-27,Europa,GIG,FCO,2027-03-21,2027-03-30,9,5742,1,Tap Air Portugal,4226
+2026-11-27,Flórida,GRU,MIA,2027-10-03,2027-10-11,8,5501,1,Avianca,3104
+2026-11-27,Flórida,GRU,MCO,2027-07-11,2027-07-21,10,5751,1,United,3255
+2026-11-27,Europa,GRU,BCN,2027-07-25,2027-08-02,8,6480,1,Iberia,4264
