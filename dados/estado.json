@@ -12,8 +12,8 @@
  "telegram_offset": 282197434,
  "ultimo_resumo": "2026-11-22",
  "ultima_rodada": {
-  "data": "2026-11-27",
-  "coletados": 75,
-  "falhas": 11
+  "data": "2026-11-28",
+  "coletados": 15,
+  "falhas": 71
  }
 }
